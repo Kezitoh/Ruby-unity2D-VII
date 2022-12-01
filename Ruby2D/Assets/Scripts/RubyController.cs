@@ -5,6 +5,9 @@ using UnityEngine;
 public class RubyController : MonoBehaviour
 {
     Animator animator;
+    AudioSource audioSource;
+    public AudioClip throwClip;
+    public AudioClip damageClip;
     Vector2 lookDirection = new Vector2(1, 0);
 
     public ParticleSystem hitEffect;
@@ -26,6 +29,12 @@ public class RubyController : MonoBehaviour
         animator = GetComponent<Animator>();
         rigidbody2d = GetComponent<Rigidbody2D>();
         currentHealth = maxHealth;
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    public void PlaySound(AudioClip clip)
+    {
+        audioSource.PlayOneShot(clip);
     }
 
     // Update is called once per frame
@@ -73,6 +82,7 @@ public class RubyController : MonoBehaviour
         if(amount < 0)
         {
             animator.SetTrigger("Hit");
+            PlaySound(damageClip);
             ParticleSystem particleObject = Instantiate(hitEffect); 
             if(isInvincible)
                 return;
@@ -91,7 +101,7 @@ public class RubyController : MonoBehaviour
 
         Projectile projectile = projectileObject.GetComponent<Projectile>();
         projectile.Launch(lookDirection, 300);
-
+        PlaySound(throwClip);
         animator.SetTrigger("Launch");
     }
 }
